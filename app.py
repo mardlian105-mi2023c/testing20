@@ -40,10 +40,9 @@ def add_product():
         deskripsi = request.form['deskripsi']
         harga = request.form['harga']
         file = request.files['gambar']
-        
-        # Untuk deployment di Vercel (read-only file system)
+
         if os.environ.get("VERCEL"):
-            flash("Upload tidak disimpan secara permanen di Vercel. Coba di local.")
+            flash("Upload tidak disimpan di Vercel. Coba di local.")
             filename = "default.jpg"
         else:
             filename = secure_filename(file.filename)
@@ -120,5 +119,10 @@ def delete(id):
         conn.execute("DELETE FROM produk WHERE id=?", (id,))
     return redirect(url_for('admin'))
 
-# Untuk Vercel
+# Untuk vercel deployment
 app = app
+
+if __name__ == '__main__':
+    if not os.path.exists('static/uploads'):
+        os.makedirs('static/uploads')
+    app.run(debug=True)
