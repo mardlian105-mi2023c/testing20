@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <body class="bg-gray-100 p-6">
+      <div class="max-w-md mx-auto bg-white p-6 rounded shadow">
+        <h1 class="text-xl font-bold mb-4">Login / Register</h1>
+        <form method="POST">
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            class="w-full mb-3 p-2 border rounded"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            class="w-full mb-3 p-2 border rounded"
+            required
+          />
+          <div class="flex justify-between">
+            <button
+              name="action"
+              value="login"
+              class="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Login
+            </button>
+            <button
+              name="action"
+              value="register"
+              class="bg-green-500 text-white px-4 py-2 rounded"
+            >
+              Register
+            </button>
+          </div>
+        </form>
+        {% with messages = get_flashed_messages() %} {% for msg in messages %}
+        <p class="text-red-500 mt-4">{{ msg }}</p>
+        {% endfor %} {% endwith %}
+      </div>
+    </body>
+  </body>
+</html>
