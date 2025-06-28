@@ -40,9 +40,15 @@ def add_product():
         deskripsi = request.form['deskripsi']
         harga = request.form['harga']
         file = request.files['gambar']
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
+        
+        # Untuk deployment di Vercel (read-only file system)
+        if os.environ.get("VERCEL"):
+            flash("Upload tidak disimpan secara permanen di Vercel. Coba di local.")
+            filename = "default.jpg"
+        else:
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
 
         with sqlite3.connect('database.db') as conn:
             conn.execute("INSERT INTO produk (nama, deskripsi, harga, gambar) VALUES (?, ?, ?, ?)",
@@ -114,7 +120,5 @@ def delete(id):
         conn.execute("DELETE FROM produk WHERE id=?", (id,))
     return redirect(url_for('admin'))
 
-if __name__ == '__main__':
-    if not os.path.exists('static/uploads'):
-        os.makedirs('static/uploads')
-    app.run(debug=True)
+# Untuk Vercel
+app = app
