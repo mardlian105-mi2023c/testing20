@@ -7,6 +7,11 @@ app = Flask(__name__)
 app.secret_key = 'rahasia'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
+# Buat folder uploads jika belum ada
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+
+# Inisialisasi database
 def init_db():
     with sqlite3.connect('database.db') as conn:
         conn.execute('''CREATE TABLE IF NOT EXISTS produk (
@@ -41,10 +46,8 @@ def add_product():
         harga = request.form['harga']
         file = request.files['gambar']
 
-        if os.environ.get("VERCEL"):
-            flash("Upload tidak disimpan di Vercel. Coba di local.")
-            filename = "default.jpg"
-        else:
+        filename = "default.jpg"
+        if file and file.filename != "":
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
@@ -119,10 +122,8 @@ def delete(id):
         conn.execute("DELETE FROM produk WHERE id=?", (id,))
     return redirect(url_for('admin'))
 
-# Untuk vercel deployment
+# Untuk Render & Gunicorn
 app = app
 
 if __name__ == '__main__':
-    if not os.path.exists('static/uploads'):
-        os.makedirs('static/uploads')
-    app.run(debug=True)
+    app.run()
